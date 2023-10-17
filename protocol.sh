@@ -23,15 +23,13 @@
 #
 # This web service implements the following protocol
 #
-#   A -> S: A,B
-#   S -> A: {#K,{K}KBS}KAS
-#   A -> B: {K}KBS,{#s}K
+#   A -> B: hello
+#   B -> A: #K
+#   A -> B: {#s}#K
 #
 
-WEBSERVICE_TO_HACK="http://10.0.0.6/ctf_deploy/compleke/AOE56ESVUW"
+WEBSERVICE_TO_HACK="http://10.0.0.6/ctf_deploy/simplekeiv/roN94NuYz4"
 
-# You have the following key KES with the server
-KES="1788279208104052375212791311701435195696"
 # ---------------------------------------------------------------------
 
 function sanitise_b64() {
@@ -72,11 +70,11 @@ function protocol() {
   # Run the protocol
   step1=$(wget -q -O - "$WEBSERVICE_TO_HACK/A.php?step=1")
   echo "$step1"
-  step2=$(wget -q -O - "$WEBSERVICE_TO_HACK/S.php?step=2&data=$(injectB "$step1")")
+  step2=$(wget -q -O - --keep-session-cookies --save-cookies cookies.txt "$WEBSERVICE_TO_HACK/B.php?step=2&data=$(injectB "$step1")")
   echo "$step2"
   step3=$(wget -q -O - "$WEBSERVICE_TO_HACK/A.php?step=3&data=$(injectA "$step2")")
   echo "$step3"
-  printf "\n$(wget -q -O - "$WEBSERVICE_TO_HACK/B.php?step=4&data=$(injectB "$step3")")\n"
+  printf "\n$(wget -q -O -  --load-cookies cookies.txt "$WEBSERVICE_TO_HACK/B.php?step=4&data=$(injectB "$step3")")\n"
 }
 # ---------------------------------------------------------------------
 
